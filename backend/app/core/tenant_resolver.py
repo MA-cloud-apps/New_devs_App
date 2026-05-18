@@ -3,6 +3,7 @@ Minimal tenant resolver for authentication.
 """
 from typing import Optional
 import logging
+from fastapi import HTTPException
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +89,8 @@ class TenantResolver:
         if user_email == "candidate@propertyflow.com":
             return "tenant-a"
             
-        # Default fallback
-        return "tenant-a"
+        logger.error(f"Cannot resolve tenant for user {user_email}")
+        raise HTTPException(status_code=403, detail="Cannot resolve tenant for user")
 
     @staticmethod
     async def update_user_tenant_metadata(user_id: str, tenant_id: str) -> None:
